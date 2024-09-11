@@ -24,8 +24,8 @@ Avant de lancer l'application, assurez-vous d'avoir installé :
  1. Clonez le repository du projet sur votre machine locale :
 
    ```bash
-   git clone 
-   cd 
+   git clone https://github.com/FatimataAliouSall/ABC-Corporation.git
+   cd ABC-Corporation
 
    ```
 
@@ -73,9 +73,8 @@ Avant de lancer l'application, assurez-vous d'avoir installé :
    1. Lancez l'application en exécutant le script principal :
 
     ```bash
-   node index.js
-
-   ``` 
+       node index.js
+    ``` 
 
    2. Interagissez avec l'application en utilisant les options proposées  :
 
@@ -94,7 +93,7 @@ Avant de lancer l'application, assurez-vous d'avoir installé :
 
 ##  Auteur 
 
- Fatimata Aliou Sall [https://github.com/FatimataAliouSall/Gestion-commande.git]  
+ Fatimata Aliou Sall [https://github.com/FatimataAliouSall/ABC-Corporation.git]  
 
 
 
