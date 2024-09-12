@@ -43,16 +43,16 @@ async function customersMenu() {
         console.log('Customer mis à jour avec succès!');
         break;
 
-      case '3':
-        const idToDelete = readlineSync.question('Entrez l\'ID du customer à supprimer: ');
-        const customerExistsToDelete = await customersModule.exists(idToDelete);
-        if (!customerExistsToDelete) {
-          console.log(`Le client avec l'ID ${idToDelete} n'existe pas.`);
+        case '3':
+          const idToDelete = readlineSync.question('Entrez l\'ID du client à supprimer: ');
+          try {
+            await customersModule.destroy(idToDelete);
+            console.log('Client supprimé avec succès!');
+          } catch (error) {
+            console.log(error.message); 
+          }
           break;
-        }
-        await customersModule.destroy(idToDelete);
-        console.log('Customer supprimé avec succès!');
-        break;
+        
 
       case '4':
         const customers = await customersModule.getAll();

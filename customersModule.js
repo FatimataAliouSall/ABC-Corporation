@@ -62,7 +62,7 @@ async function getAll() {
   }
 }
 
-// Fonction pour supprimer un client
+
 async function destroy(id) {
   const connection = await pool.getConnection();
   try {
@@ -71,10 +71,20 @@ async function destroy(id) {
       throw new Error(`Le client avec l'ID ${id} n'existe pas.`);
     }
 
+    
     const [result] = await connection.execute('DELETE FROM customers WHERE id = ?', [id]);
+
     return result.affectedRows;
+
   } catch (error) {
+    // Gérer l'erreur liée à la contrainte de clé étrangère
+    if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+      throw new Error(`Impossible de supprimer le client avec l'ID ${id} car il est lié à des commandes existantes.`);
+    }
+
+    // Autres erreurs
     throw error;
+
   } finally {
     connection.release();
   }
