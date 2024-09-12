@@ -4,10 +4,16 @@ Ce projet est une application Node.js en mode console qui permet de gérer les c
 
 ##  Fonctionnalités
 
+L'application permet la gestion des opérations suivantes :
+
  - CRUD pour les clients : Créer, lire, mettre à jour et supprimer des clients.
  - CRUD pour les produits : Créer, lire, mettre à jour et supprimer des produits.
  - CRUD pour les commandes : Créer, lire, mettre à jour et supprimer des commandes.
  - CRUD pour les paiements : Créer, lire, mettre à jour et supprimer des paiements associés aux commandes.
+
+Elle inclut également :
+
+
  - Validation des saisies : Gestion des erreurs de saisie des montants, dates et autres informations.
  - Gestion des exceptions : Gestion des erreurs liées à la base de données, connexions, et saisies incorrectes.
 
@@ -23,79 +29,51 @@ Avant de lancer l'application, assurez-vous d'avoir installé :
 ##  Installation
  
 
- 1. Clonez le repository du projet sur votre machine locale :
+1. Clonez le repository du projet sur votre machine locale :
 
    ```bash
-   git clone https://github.com/FatimataAliouSall/ABC-Corporation.git
-   cd ABC-Corporation
+   git clone https://github.com/FatimataAliouSall/Gestion-Commandes-Paiements.git
+   cd Gestion-Commandes-Paiements
 
    ```
 
- 2. Installez les dépendances :
+2. Installez les dépendances :
 
    ```bash
    npm install
 
    ``` 
-   
-  3. Créez un fichier .db.js dans la racine du projet et configurez les informations de base de données :
+
+##  Configuration de la Base de Données
+
+1. Localisez le fichier db.jsà la racine du projet (ou créez-le si nécessaire). Ce fichier est utilisé pour configurer la connexion à la base de données MySQL. :
+
+2. Modifiez ce fichier pour inclure vos informations d'identification pour MySQL. Voici un exemple de configuration :
 
    ```bash
-      -  const mysql = require('mysql2/promise');
-
-
-          -  const connPool = mysql.createPool({
-          - host: 'localhost',             
-          -  user: 'root',                  
-          -  password: 'root',             
-          -  database: 'abc_corporation',   
-          -  waitForConnections: true,       
-          -  connectionLimit: 10,           
-          -  queueLimit: 0 ,
-          -  connectTimeout: 10000 
-                            
-        });
-
-
-     - connPool.getConnection()
-        .then(connection => {
-            console.log("CONNECTED to MySQL Database");
-            connection.release();  
-        })
-        .catch(err => {
-            console.error("Failed to connect to the database:", err.message);
-        });
-
-     module.exports = connPool;
-
-
+      
+      host: 'localhost',             
+      user: 'yourusername',          
+      password: 'yourpassword',      
+      database: 'abc_corporation',   
+      waitForConnections: true,      
+      connectionLimit: 10,           
+      queueLimit: 0,
+      connectTimeout: 10000 
+            
    ```   
-##  Utilisation
-    
-   1. Lancez l'application en exécutant le script principal :
 
-    ```bash
-       node index.js
-    ``` 
+Instructions d'adaptation :
 
-   2. Interagissez avec l'application en utilisant les options proposées  :
+- Remplacez 'yourusername'par votre nom d'utilisateur MySQL
+- Remplacez 'yourpassword'par votre mot de passe MySQL.
+- Modifiez 'abc_corporation'si vous utilisez une base de données avec un nom différent.
 
-      === MENU PRINCIPAL ===
-      1. Gérer les clients
-      2. Gérer les produits
-      3. Gérer les commandes
-      4. Gérer les paiements
-      5. Quitter
-
-##  Gestion des Erreurs et Exceptions
-
-  - Validation des entrées utilisateur : Assurez-vous que toutes les saisies (montant, date, etc.) sont correctes avant de les enregistrer dans la base de données.
-  - Gestion des erreurs SQL et des erreurs de connexion à la base de données.
 
 
 ##  Auteur 
 
- Fatimata Aliou Sall [https://github.com/FatimataAliouSall/ABC-Corporation.git]  
+ Fatimata Aliou Sall [https://github.com/FatimataAliouSall/Gestion-Commandes-Paiements.git]  
 
 
 
