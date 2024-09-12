@@ -217,58 +217,23 @@ async function ordersMenu() {
 
     switch (choice) {
       case '1':
-        const date = readlineSync.question('Entrez la date de la commande (AAAA-MM-JJ): ');
-        const customer_id = readlineSync.questionInt('Entrez l\'ID du client: ');
-        const delivery_address = readlineSync.question('Entrez l\'adresse de livraison: ');
-        const track_number = readlineSync.question('Entrez le numéro de suivi: ');
-        const status = readlineSync.question('Entrez le statut de la commande: ');
+        await addOrder();
+        break;
 
-        // Ajoute la commande
-        const orderId = await purchaseOrdersModule.store(date, customer_id, delivery_address, track_number, status);
-        console.log('Commande ajoutée avec succès!');
+      case '2':
+        await updateOrder();
+        break;
 
-        
+      case '3':
+        await deleteOrder();
+        break;
 
-        // Sous-menu pour ajouter des détails
-        let subMenuExit = false;
-        while (!subMenuExit) {
-          console.log(`
-            === SOUS-MENU COMMANDES ===
-            1. Ajouter un détail de commande
-            2. Sauvegarder et quitter
-            3. Quitter sans sauvegarder
-          `);
-          const subChoice = readlineSync.question('Choisissez une option: ');
-
-          switch (subChoice) {
-            case '1':
-              const productId = readlineSync.questionInt('Entrez l\'ID du produit: ');
-              const quantity = readlineSync.questionInt('Entrez la quantité: ');
-              const price = readlineSync.questionFloat('Entrez le prix: ');
-              await purchaseOrdersModule.addOrderDetail(orderId, productId, quantity, price);
-              break;
-
-            case '2':
-              console.log('Commande et détails sauvegardés.');
-              subMenuExit = true;
-              break;
-
-            case '3':
-              console.log('Quitter sans ajouter d\'autres détails.');
-              subMenuExit = true;
-              break;
-
-            default:
-              console.log('Option invalide. Veuillez choisir une option valide.');
-          }
-        }
+      case '4':
+        await listOrders();
         break;
 
       case '5':
-        const orderIdToRetrieve = readlineSync.questionInt('Entrez l\'ID de la commande à récupérer: ');
-        const orderWithDetails = await purchaseOrdersModule.getOrderWithDetails(orderIdToRetrieve);
-        console.log('Commande:', orderWithDetails.order);
-        console.log('Détails de la commande:', orderWithDetails.details);
+        await retrieveOrderWithDetails();
         break;
 
       case '6':
@@ -280,6 +245,96 @@ async function ordersMenu() {
     }
   }
 }
+
+// Ajoute une commande
+async function addOrder() {
+  const date = readlineSync.question('Entrez la date de la commande (AAAA-MM-JJ): ');
+  const customer_id = readlineSync.questionInt('Entrez l\'ID du client: ');
+  const delivery_address = readlineSync.question('Entrez l\'adresse de livraison: ');
+  const track_number = readlineSync.question('Entrez le numéro de suivi: ');
+  const status = readlineSync.question('Entrez le statut de la commande: ');
+
+  const orderId = await purchaseOrdersModule.store(date, customer_id, delivery_address, track_number, status);
+  console.log('Commande ajoutée avec succès!');
+
+  let detailsAdded = false;
+  let subMenuExit = false;
+  while (!subMenuExit) {
+    console.log(`
+      === SOUS-MENU DÉTAILS DE COMMANDE ===
+      1. Ajouter un détail de commande
+      2. Sauvegarder et quitter
+      3. Quitter sans sauvegarder
+    `);
+
+    const subChoice = readlineSync.question('Choisissez une option: ');
+
+    switch (subChoice) {
+      case '1':
+        const productId = readlineSync.questionInt('Entrez l\'ID du produit: ');
+        const quantity = readlineSync.questionInt('Entrez la quantité: ');
+        const price = readlineSync.questionFloat('Entrez le prix: ');
+        await purchaseOrdersModule.addOrderDetail(orderId, productId, quantity, price);
+        detailsAdded = true;
+        break;
+
+      case '2':
+        if (detailsAdded) {
+          console.log('Commande et détails sauvegardés.');
+          subMenuExit = true;
+        } else {
+          console.log('Vous devez ajouter au moins un détail de commande avant de sauvegarder.');
+        }
+        break;
+
+      case '3':
+        if (!detailsAdded) {
+          await purchaseOrdersModule.destroy(orderId);
+          console.log('Commande annulée car aucun détail n\'a été ajouté.');
+        }
+        subMenuExit = true;
+        break;
+
+      default:
+        console.log('Option invalide. Veuillez choisir une option valide.');
+    }
+  }
+}
+
+// Mets à jour une commande
+async function updateOrder() {
+  const id = readlineSync.questionInt('Entrez l\'ID de la commande à mettre à jour: ');
+  const date = readlineSync.question('Entrez la nouvelle date de la commande (AAAA-MM-JJ): ');
+  const customer_id = readlineSync.questionInt('Entrez l\'ID du client: ');
+  const delivery_address = readlineSync.question('Entrez la nouvelle adresse de livraison: ');
+  const track_number = readlineSync.question('Entrez le nouveau numéro de suivi: ');
+  const status = readlineSync.question('Entrez le nouveau statut de la commande: ');
+
+  await purchaseOrdersModule.update(date, customer_id, delivery_address, track_number, status, id);
+  console.log('Commande mise à jour avec succès.');
+}
+
+// Supprime une commande
+async function deleteOrder() {
+  const id = readlineSync.questionInt('Entrez l\'ID de la commande à supprimer: ');
+  await purchaseOrdersModule.destroy(id);
+  console.log('Commande supprimée avec succès.');
+}
+
+// Liste toutes les commandes
+async function listOrders() {
+  const orders = await purchaseOrdersModule.getAll();
+  console.log('Liste des commandes:', orders);
+}
+
+// Récupère une commande avec ses détails
+async function retrieveOrderWithDetails() {
+  const orderId = readlineSync.questionInt('Entrez l\'ID de la commande à récupérer: ');
+  const orderWithDetails = await purchaseOrdersModule.getOrderWithDetails(orderId);
+  console.log('Commande:', orderWithDetails.order);
+  console.log('Détails de la commande:', orderWithDetails.details);
+}
+
 
 
 async function mainMenu() {
