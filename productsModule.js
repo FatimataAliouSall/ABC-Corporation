@@ -9,11 +9,16 @@ async function store(name, description, price, stock, category, barcode, status)
     );
     return result.insertId;
   } catch (error) {
+   
+    if (error.code === 'ER_DUP_ENTRY') {
+      throw new Error(`Le code-barres "${barcode}" est déjà utilisé pour un autre produit. Veuillez entrer un code-barres unique.`);
+    }
     throw error;
   } finally {
     connection.release();
   }
 }
+
 
 
 async function exists(id) {
@@ -73,11 +78,16 @@ async function destroy(id) {
     const [result] = await connection.execute('DELETE FROM products WHERE id = ?', [id]);
     return result.affectedRows;
   } catch (error) {
+    // Gérer l'erreur de contrainte de clé étrangère
+    if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+      throw new Error(`Impossible de supprimer le produit avec l'ID ${id} car il est utilisé dans des commandes.`);
+    }
     throw error;
   } finally {
     connection.release();
   }
 }
+
 
 module.exports = {
   store,

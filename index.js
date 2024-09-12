@@ -86,16 +86,22 @@ async function productsMenu() {
 
     switch (choice) {
       case '1':
-        const productName = readlineSync.question('Entrez le nom du produit: ');
-        const productDescription = readlineSync.question('Entrez la description du produit: ');
-        const productPrice = readlineSync.questionFloat('Entrez le prix du produit: ');
-        const productStock = readlineSync.questionInt('Entrez le stock du produit: ');
-        const productCategory = readlineSync.question('Entrez la catégorie du produit: ');
-        const productBarcode = readlineSync.question('Entrez le code-barres du produit: ');
-        const productStatus = readlineSync.question('Entrez le statut du produit (actif/inactif): ');
-        await productsModule.store(productName, productDescription, productPrice, productStock, productCategory, productBarcode, productStatus);
-        console.log('Produit ajouté avec succès!');
-        break;
+  try {
+    const productName = readlineSync.question('Entrez le nom du produit: ');
+    const productDescription = readlineSync.question('Entrez la description du produit: ');
+    const productPrice = readlineSync.questionFloat('Entrez le prix du produit: ');
+    const productStock = readlineSync.questionInt('Entrez le stock du produit: ');
+    const productCategory = readlineSync.question('Entrez la catégorie du produit: ');
+    const productBarcode = readlineSync.question('Entrez le code-barres du produit: ');
+    const productStatus = readlineSync.question('Entrez le statut du produit (actif/inactif): ');
+    
+    await productsModule.store(productName, productDescription, productPrice, productStock, productCategory, productBarcode, productStatus);
+    console.log('Produit ajouté avec succès!');
+  } catch (error) {
+    console.log(error.message);
+  }
+  break;
+
 
       case '2':
         const productIdToUpdate = readlineSync.question('Entrez l\'ID du produit à mettre à jour: ');
@@ -110,11 +116,16 @@ async function productsMenu() {
         console.log('Produit mis à jour avec succès!');
         break;
 
-      case '3':
-        const productIdToDelete = readlineSync.question('Entrez l\'ID du produit à supprimer: ');
-        await productsModule.destroy(productIdToDelete);
-        console.log('Produit supprimé avec succès!');
-        break;
+        case '3':
+          try {
+            const productIdToDelete = readlineSync.question('Entrez l\'ID du produit à supprimer: ');
+            await productsModule.destroy(productIdToDelete);
+            console.log('Produit supprimé avec succès!');
+          } catch (error) {
+            console.log(error.message);
+          }
+          break;
+        
 
       case '4':
         const products = await productsModule.getAll();
