@@ -4,6 +4,8 @@ Ce projet est une application Node.js en mode console qui permet de gérer les c
 
 ##  Fonctionnalités
 
+ - CRUD pour les clients : Créer, lire, mettre à jour et supprimer des clients.
+ - CRUD pour les produits : Créer, lire, mettre à jour et supprimer des produits.
  - CRUD pour les commandes : Créer, lire, mettre à jour et supprimer des commandes.
  - CRUD pour les paiements : Créer, lire, mettre à jour et supprimer des paiements associés aux commandes.
  - Validation des saisies : Gestion des erreurs de saisie des montants, dates et autres informations.
