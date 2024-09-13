@@ -21,6 +21,12 @@ async function store(date, customer_id, delivery_address, track_number, status) 
     );
     return result.insertId;
   } catch (error) {
+    if (error.code === 'ER_TRUNCATED_WRONG_VALUE') {
+      throw new Error(`Valeur incorrecte pour le champ 'date'. Assurez-vous que la date est au format 'AAAA-MM-JJ'.`);
+    } else if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+      throw new Error(`Le client avec l'ID ${customer_id} n'existe pas. Veuillez vérifier l'ID du client.`);
+    }
+    
     throw error;
   } finally {
     connection.release();
@@ -56,14 +62,20 @@ async function getOrderWithDetails(orderId) {
         details: details
       };
     } else {
-      throw new Error('Commande non trouvée');
+      throw new Error(`La commande avec l'ID ${orderId} n'a pas été trouvée.`);
     }
   } catch (error) {
+    if (error.message.includes('ETIMEDOUT')) {
+      console.error('Problème de connexion à la base de données :', error.message);
+      throw new Error('Impossible de se connecter à la base de données. Veuillez réessayer plus tard.');
+    }
+ 
     throw error;
   } finally {
     connection.release();
   }
 }
+
 
 
 async function update(date, customer_id, delivery_address, track_number, status, id) {

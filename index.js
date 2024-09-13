@@ -228,24 +228,55 @@ async function ordersMenu() {
 
     switch (choice) {
       case '1':
-        await addOrder();
-        break;
+    try {
+        await addOrder();  
+    } catch (error) {
+        // Gestion des erreurs spécifiques
+        if (error.message.includes('Valeur incorrecte pour le champ')) {
+            console.log('Erreur: La date que vous avez entrée est incorrecte.');
+            console.log('Assurez-vous d\'utiliser le format suivant pour la date : AAAA-MM-JJ.');
+        } else if (error.message.includes('n\'existe pas')) {
+            console.log('Erreur: L\'ID du client que vous avez entré est invalide.');
+            console.log('Veuillez vérifier que l\'ID du client existe dans la base de données avant de réessayer.');
+        } else {
+            // Gestion des autres erreurs non spécifiques  
+            console.log('Erreur lors de l\'ajout de la commande :');
+            console.log('Veuillez réessayer avec des informations valides.');
+        }
+    }
 
-      case '2':
+     break;
+
+    case '2':
+      try {
         await updateOrder();
-        break;
+      } catch (error) {
+        
+      }
+   break;
 
-      case '3':
+   case '3':
         await deleteOrder();
-        break;
+   break;
 
-      case '4':
+   case '4':
         await listOrders();
         break;
 
-      case '5':
-        await retrieveOrderWithDetails();
-        break;
+   case '5':
+  try {
+    await retrieveOrderWithDetails();
+  } catch (error) {
+    if (error.message.includes('Impossible de se connecter à la base de données')) {
+      console.log(error.message);
+    } else {
+      console.log('Erreur :', error.message);
+      console.log('Veuillez entrer un ID valide ou vérifier si la commande existe.');
+    }
+  }
+  break;
+
+        
 
       case '6':
         exit = true;
