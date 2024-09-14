@@ -78,25 +78,61 @@ async function getOrderWithDetails(orderId) {
 
 
 
-async function update(date, customer_id, delivery_address, track_number, status, id) {
+async function update(date, customer_id, delivery_address, track_number, status, id, details) {
   const connection = await pool.getConnection();
   try {
     const purchaseOrderExists = await exists(id);
     if (!purchaseOrderExists) {
-      throw new Error(`Le purchaseOrder avec l'ID ${id} n'existe pas.`);
+      throw new Error(`La commande avec l'ID ${id} n'existe pas.`);
     }
 
     const [result] = await connection.execute(
       'UPDATE purchase_orders SET date = ?, customer_id = ?, delivery_address = ?, track_number = ?, status = ? WHERE id = ?',
       [date, customer_id, delivery_address, track_number, status, id]
     );
-    return result.affectedRows;
+    for (const detail of details) {
+      await connection.execute(
+          'UPDATE order_details SET quantity = ?, price = ? WHERE order_id = ? AND product_id = ?',
+          [detail.quantity, detail.price, id, detail.productId]
+      );
+  }
+
+    if (result.affectedRows === 0) {
+      throw new Error(`Aucune mise à jour n'a été effectuée sur la commande avec l'ID ${id}.`);
+    }
+    else{
+      console.log('Commande mise à jour avec succès.');
+    }
+    //  else if  (error.code === 'ER_TRUNCATED_WRONG_VALUE') {
+    //   throw new Error(`Valeur incorrecte pour le champ 'date'. Assurez-vous que la date est au format 'AAAA-MM-JJ'.`);
+    // } else if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+    //   throw new Error(`Le client avec l'ID ${customer_id} n'existe pas. Veuillez vérifier l'ID du client.`);
+    // } else if (error.message.includes('n\'existe pas')) {
+    //   throw new Error(error.message);
+    // } else {
+    //   throw new Error(' Veuillez vérifier les informations fournies.');
+    // }
+
+    
   } catch (error) {
-    throw error;
+     if  (error.code === 'ER_TRUNCATED_WRONG_VALUE') {
+      console.log(`Valeur incorrecte pour le champ 'date'. Assurez-vous que la date est au format 'AAAA-MM-JJ'.`);
+    } else if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+      console.log(`Le client avec l'ID ${customer_id} n'existe pas. Veuillez vérifier l'ID du client.`);
+    } else if (error.message.includes('n\'existe pas')) {
+      console.log(error.message);
+    } else {
+      console.log(' Erreur lors de la modification.',error.message);
+    }
+
+    // console.error('Veuillez entrer un ID de client valide:', error.message);
   } finally {
     connection.release();
   }
 }
+
+
+
 
 async function getAll() {
   const connection = await pool.getConnection();
@@ -116,7 +152,7 @@ async function destroy(orderId) {
   try {
     const purchaseOrderExists = await exists(orderId);
     if (!purchaseOrderExists) {
-      throw new Error(`Le purchase_orders avec l'ID ${orderId} n'existe pas.`);
+      throw new Error(`La commande avec l'ID ${orderId} n'existe pas.`);
     }
 
     await connection.execute('DELETE FROM order_details WHERE order_id = ?', [orderId]);
@@ -124,11 +160,16 @@ async function destroy(orderId) {
 
     return result.affectedRows;
   } catch (error) {
-    throw error;
+    if (error.message.includes('n\'existe pas')) {
+      throw new Error(`Impossible de supprimer : ${error.message}`);
+    } else {
+      throw new Error('Veuillez réessayer.');
+    }
   } finally {
     connection.release();
   }
 }
+
 
 module.exports = {
   store,

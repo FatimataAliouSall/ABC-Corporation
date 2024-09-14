@@ -247,17 +247,27 @@ async function ordersMenu() {
 
      break;
 
-    case '2':
-      try {
-        await updateOrder();
-      } catch (error) {
-        
-      }
-   break;
+     case '2':
+  try {
+    await updateOrder();
+    // console.log('La commande a été mise à jour avec succès.');
+  } catch (error) {
+    console.log(error.message);  // Affichage des messages d'erreur capturés
+    // console.log('Veuillez vérifier les informations et réessayer.');
+  }
+  break;
+
+    
 
    case '3':
-        await deleteOrder();
-   break;
+  try {
+    await deleteOrder();
+    console.log('La commande a été supprimée avec succès.');
+  } catch (error) {
+    console.log('Erreur lors de la suppression de la commande :', error.message);
+  }
+  break;
+
 
    case '4':
         await listOrders();
@@ -351,9 +361,49 @@ async function updateOrder() {
   const delivery_address = readlineSync.question('Entrez la nouvelle adresse de livraison: ');
   const track_number = readlineSync.question('Entrez le nouveau numéro de suivi: ');
   const status = readlineSync.question('Entrez le nouveau statut de la commande: ');
+  let productDetailsUpdate = [];
+while (true) {
+  console.log(`
+      21. Choisir produit a modifier
+      22. Retour` 
+  );
+  const choix = readlineSync.question('Choisissez une option : ');
+  switch (choix) {
+      case '21':
+          // let productId;
+          // while (true) {
+             const productId = readlineSync.questionInt('ID du produit : ');
 
-  await purchaseOrdersModule.update(date, customer_id, delivery_address, track_number, status, id);
-  console.log('Commande mise à jour avec succès.');
+          //     if (await productIdExists(productId)) {
+          //         break;
+          //     } else {
+          //         console.log(`Produit avec l'ID : ${productId} n'existe pas. Veuillez essayer un autre ID.`);
+          //     }
+          // }
+          const quantity = readlineSync.questionInt('Quantite du produit : ');
+          const price = readlineSync.question('Prix du produit : ');
+          productDetailsUpdate.push({
+              productId,
+              quantity,
+              price
+          });
+          if (productDetailsUpdate.length > 0) {
+            await purchaseOrdersModule.update(date, customer_id, delivery_address, track_number, status, id, productDetailsUpdate);
+              // await updatePurchaseDetails(purchaseIdToUpdate, ordersUpdate, productDetailsUpdate)
+              console.log(`Commande avec l'ID : ${productId} a été modifiée avec succès.`);
+
+          }
+          break;
+      case '22':
+          return ordersMenu(); 
+      default:
+          console.log('Choix invalide.');
+          break;
+  }
+}
+
+  // await purchaseOrdersModule.update(date, customer_id, delivery_address, track_number, status, id);
+  // console.log('Commande mise à jour avec succès.');
 }
 
 // Supprime une commande
