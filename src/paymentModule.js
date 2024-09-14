@@ -1,4 +1,4 @@
-const connection = require('./db'); 
+const connection = require('../db'); 
 
 async function orderExists(order_id) {
   const query = `SELECT 1 FROM purchase_orders WHERE id = ?`;
