@@ -1,8 +1,8 @@
 const readlineSync = require('readline-sync');
-const customersModule = require('./customersModule');
-const productsModule = require('./productsModule');
-const paymentsModule = require('./paymentsModule');
-const purchaseOrdersModule = require('./purchaseOrdersModule');
+const customersModule = require('./customerModule');
+const productsModule = require('./productModule');
+const paymentsModule = require('./paymentModule');
+const purchaseOrdersModule = require('./purchaseOrderModule');
 
 async function customersMenu() {
   let exit = false;
