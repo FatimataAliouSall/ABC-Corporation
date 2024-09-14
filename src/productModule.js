@@ -1,4 +1,4 @@
-const pool = require('./db');
+const pool = require('../db');
 
 async function store(name, description, price, stock, category, barcode, status) {
   const connection = await pool.getConnection();
