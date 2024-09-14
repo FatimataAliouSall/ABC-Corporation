@@ -1,4 +1,4 @@
-## ABC Corporation - Gestion des Commandes et Paiements
+##  Gestion-Commandes-Paiements
 
 Ce projet est une application Node.js en mode console qui permet de gérer les commandes et les paiements pour ABC Corporation. L'application inclut des fonctionnalités CRUD (Create, Read, Update, Delete) pour les commandes et les paiements, avec une gestion rigoureuse des exceptions et des erreurs de saisie.
 
@@ -41,30 +41,22 @@ Avant de lancer l'application, assurez-vous d'avoir installé :
 
    ```
 
-## Configuration de la Base de Données
+## Configurez la base de données
 
-1. Localisez le fichier db.jsà la racine du projet (ou créez-le si nécessaire). Ce fichier est utilisé pour configurer la connexion à la base de données MySQL. :
+   - Assurez-vous que Mysql est en cours d'exécution sur votre machine locale.
+   - Mettez les paramètres de connexion dans `db.js`.
 
-2. Modifiez ce fichier pour inclure vos informations d'identification pour MySQL. Voici un exemple de configuration :
+
+##  Lancement de l'application
+
+Une fois la configuration de la base de données terminée, vous pouvez lancer l'application avec la commande suivante :
 
    ```bash
-
-      host: 'localhost',
-      user: 'yourusername',
-      password: 'yourpassword',
-      database: 'abc_corporation',
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-      connectTimeout: 10000
-
+   node index.js
+   
    ```
 
-Instructions d'adaptation :
 
-- Remplacez 'yourusername'par votre nom d'utilisateur MySQL
-- Remplacez 'yourpassword'par votre mot de passe MySQL.
-- Modifiez 'abc_corporation'si vous utilisez une base de données avec un nom différent.
 
 ## Auteur
 
