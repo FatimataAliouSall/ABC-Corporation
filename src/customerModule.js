@@ -10,11 +10,19 @@ async function store(name, address, email, phone) {
     );
     return result.insertId;
   } catch (error) {
-    throw error;
+    if (error.code === 'ER_DUP_ENTRY') {
+      if (error.sqlMessage.includes('customers.email')) {
+        throw new Error('L\'email est déjà utilisé.');
+      } else if (error.sqlMessage.includes('customers.phone')) {
+        throw new Error('Le numéro de téléphone est déjà utilisé.');
+      }
+    }
+    throw error; 
   } finally {
     connection.release();
   }
 }
+
 
 
 async function exists(id) {
@@ -44,6 +52,11 @@ async function update(id, name, address, email, phone) {
     );
     return result.affectedRows;
   } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage.includes('customers.phone')) {
+      throw new Error('Le numéro de téléphone est déjà utilisé.');
+    } else if (error.code === 'ER_DUP_ENTRY' && error.sqlMessage.includes('customers.email')) {
+      throw new Error('L email  est déjà utilisé.');
+    }
     throw error;
   } finally {
     connection.release();
