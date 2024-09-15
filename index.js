@@ -20,28 +20,40 @@ async function customersMenu() {
 
     switch (choice) {
       case '1':
-        const name = readlineSync.question('Entrez le name: ');
-        const address = readlineSync.question('Entrez l\'address: ');
-        const email = readlineSync.question('Entrez l\'email: ');
-        const phone = readlineSync.question('Entrez le phone: ');
-        await customersModule.store(name, address, email, phone);
-        console.log('Customer ajouté avec succès!');
-        break;
+  const name = readlineSync.question('Entrez le nom: ');
+  const address = readlineSync.question('Entrez l\'adresse: ');
+  const email = readlineSync.question('Entrez l\'email: ');
+  const phone = readlineSync.question('Entrez le téléphone: ');
+  
+  try {
+    await customersModule.store(name, address, email, phone);
+    console.log('Client ajouté avec succès!');
+  } catch (error) {
+    console.error('Erreur :', error.message);
+  }
+  break;
 
-      case '2':
-        const idToUpdate = readlineSync.question('Entrez l\'ID du customer à mettre à jour: ');
-        const customerExists = await customersModule.exists(idToUpdate);
-        if (!customerExists) {
-          console.log(`Le client avec l'ID ${idToUpdate} n'existe pas.`);
-          break;
-        }
-        const updatedName = readlineSync.question('Entrez le nouveau name: ');
-        const updatedAddress = readlineSync.question('Entrez la nouvelle address: ');
-        const updatedEmail = readlineSync.question('Entrez le nouvel email: ');
-        const updatedPhone = readlineSync.question('Entrez le nouveau phone: ');
-        await customersModule.update(idToUpdate, updatedName, updatedAddress, updatedEmail, updatedPhone);
-        console.log('Customer mis à jour avec succès!');
-        break;
+
+  case '2':
+    const idToUpdate = readlineSync.question('Entrez l\'ID du customer à mettre à jour: ');
+    const customerExists = await customersModule.exists(idToUpdate);
+    if (!customerExists) {
+      console.log(`Le client avec l'ID ${idToUpdate} n'existe pas.`);
+      break;
+    }
+    const updatedName = readlineSync.question('Entrez le nouveau name: ');
+    const updatedAddress = readlineSync.question('Entrez la nouvelle address: ');
+    const updatedEmail = readlineSync.question('Entrez le nouvel email: ');
+    const updatedPhone = readlineSync.question('Entrez le nouveau phone: ');
+  
+    try {
+      await customersModule.update(idToUpdate, updatedName, updatedAddress, updatedEmail, updatedPhone);
+      console.log('Client mis à jour avec succès!');
+    } catch (error) {
+      console.error('Erreur :', error.message);
+    }
+    break;
+  
 
         case '3':
           const idToDelete = readlineSync.question('Entrez l\'ID du client à supprimer: ');
