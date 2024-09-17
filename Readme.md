@@ -44,7 +44,7 @@ Avant de lancer l'application, assurez-vous d'avoir installé :
 ## Configurez la base de données
 
    - Assurez-vous que Mysql est en cours d'exécution sur votre machine locale.
-   - Mettez les paramètres de connexion dans `db.js`.
+   - Mettez les paramètres de connexion telsque le nom d'utilisateur,votre mot de passe et le nom de votre base de donnée  dans `./db.js`.
 
 
 ##  Lancement de l'application
